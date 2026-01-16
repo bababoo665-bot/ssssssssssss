@@ -18,18 +18,23 @@
         .auth-card { background: white; border-radius: 20px; width: 100%; max-width: 450px; padding: 40px; }
         .auth-input { border: 1px solid #e2e8f0 !important; padding: 12px !important; border-radius: 10px !important; width: 100%; color: #1e293b !important; background: #f8fafc !important; }
         .auth-input:focus { border-color: #00bfff !important; outline: none; box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1); }
-        .btn-auth { background-color: #00bfff; color: white; width: 100%; padding: 14px; border-radius: 10px; font-weight: bold; }
+        .btn-auth { background-color: #00bfff; color: white; width: 100%; padding: 14px; border-radius: 10px; font-weight: bold; transition: 0.2s; }
+        .btn-auth:hover { background-color: #0099cc; }
 
         /* Panel Styles */
         .sidebar-item.active { background-color: rgba(255, 255, 255, 0.05); color: var(--main-color); border-radius: 12px; border-right: 4px solid var(--main-color); }
         .dynamic-gradient { background: linear-gradient(135deg, var(--main-color) 0%, #1e1b4b 100%); }
         .glass-panel { background: rgba(10, 10, 10, 0.8); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
         .directory-card { background: rgba(20, 20, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 15px; transition: 0.2s; }
-        .directory-card:hover { background: rgba(30, 30, 30, 0.8); transform: scale(1.01); }
         
         .dynamic-bg { background-color: var(--main-color); }
         .dynamic-text { color: var(--main-color); }
         .hidden { display: none !important; }
+
+        /* Success Popup Style (image_4a7b83.png) */
+        .success-modal { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+        .check-circle { width: 80px; height: 80px; border: 4px solid #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        .check-icon { font-size: 40px; color: #4ade80; }
     </style>
 </head>
 <body id="main-body">
@@ -38,15 +43,21 @@
         <div class="auth-card">
             <div class="flex items-center space-x-4 mb-8">
                 <div class="bg-cyan-50 p-3 rounded-2xl"><i class="fa-solid fa-user-plus text-cyan-500 text-2xl"></i></div>
-                <div><h1 class="text-2xl font-black text-slate-800">MywebX</h1><p class="text-cyan-500 font-bold text-sm">สมัครสมาชิก</p></div>
+                <div><h1 class="text-2xl font-black text-slate-800 tracking-tighter">MywebX</h1><p class="text-cyan-500 font-bold text-sm">สมัครสมาชิก</p></div>
             </div>
-            <div class="space-y-4">
-                <input type="text" id="reg-user" class="auth-input" placeholder="ชื่อผู้ใช้">
+            <div class="space-y-4 text-left">
+                <div><label class="text-xs font-bold text-slate-500 ml-1">Username</label><input type="text" id="reg-user" class="auth-input" placeholder="ชื่อผู้ใช้"></div>
                 <div class="flex gap-3">
-                    <input type="password" id="reg-pass" class="auth-input" placeholder="รหัสผ่าน">
-                    <input type="password" id="reg-confirm" class="auth-input" placeholder="ยืนยันรหัสผ่าน">
+                    <div class="flex-1"><label class="text-xs font-bold text-slate-500 ml-1">Password</label><input type="password" id="reg-pass" class="auth-input" placeholder="รหัสผ่าน"></div>
+                    <div class="flex-1"><label class="text-xs font-bold text-slate-500 ml-1">Confirm password</label><input type="password" id="reg-confirm" class="auth-input" placeholder="ยืนยันรหัส"></div>
                 </div>
-                <input type="text" id="reg-pin" class="auth-input" maxlength="6" placeholder="รหัส PIN 6 หลัก">
+                <div><label class="text-xs font-bold text-slate-500 ml-1">Pin ( 6 letters )</label><input type="text" id="reg-pin" class="auth-input" maxlength="6" placeholder="รหัส PIN 6 หลัก"></div>
+                
+                <div class="border p-4 rounded-xl flex items-center justify-between bg-slate-50 mt-2 text-[10px] text-slate-400">
+                    <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" class="w-4 h-4"><span>ฉันไม่ใช่โปรแกรมอัตโนมัติ</span></label>
+                    <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" class="w-6 h-6 grayscale opacity-50">
+                </div>
+
                 <button onclick="handleRegister()" class="btn-auth mt-4 w-full">สมัครสมาชิก</button>
                 <p class="text-center text-sm text-slate-500 mt-4">มีบัญชีแล้วหรือ? <a href="javascript:void(0)" onclick="switchAuth('login')" class="text-cyan-500 font-bold">เข้าสู่ระบบเลย!</a></p>
             </div>
@@ -57,11 +68,11 @@
         <div class="auth-card">
             <div class="flex items-center space-x-4 mb-8">
                 <div class="bg-cyan-50 p-3 rounded-2xl"><i class="fa-solid fa-lock text-cyan-500 text-2xl"></i></div>
-                <div><h1 class="text-2xl font-black text-slate-800">MywebX</h1><p class="text-cyan-500 font-bold text-sm">เข้าสู่ระบบ</p></div>
+                <div><h1 class="text-2xl font-black text-slate-800 tracking-tighter">MywebX</h1><p class="text-cyan-500 font-bold text-sm">เข้าสู่ระบบ</p></div>
             </div>
-            <div class="space-y-4">
-                <input type="text" id="login-user" class="auth-input" placeholder="Username">
-                <input type="password" id="login-pass" class="auth-input" placeholder="Password">
+            <div class="space-y-4 text-left">
+                <div><label class="text-xs font-bold text-slate-500 ml-1">Username</label><input type="text" id="login-user" class="auth-input" placeholder="Username"></div>
+                <div><label class="text-xs font-bold text-slate-500 ml-1">Password</label><input type="password" id="login-pass" class="auth-input" placeholder="Password"></div>
                 <button onclick="handleLogin()" class="btn-auth w-full">เข้าสู่ระบบ</button>
                 <p class="text-center text-sm text-slate-500 mt-4">ยังไม่มีบัญชีหรือ? <a href="javascript:void(0)" onclick="switchAuth('register')" class="text-cyan-500 font-bold">สมัครสมาชิกเลยสิ!</a></p>
             </div>
@@ -74,11 +85,11 @@
                 <i class="fa-solid fa-shield-halved text-3xl text-white"></i>
             </div>
             <h2 class="text-3xl font-black mb-2">Create Your Gang</h2>
-            <p class="text-slate-500 mb-10">Build your squad's presence in seconds.</p>
+            <p class="text-slate-500 mb-10 text-sm">Build your squad's presence in seconds.</p>
             <div class="space-y-6 text-left">
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase">Gang Name</label><input type="text" id="new-gang-name" class="w-full p-4 rounded-xl bg-black border border-white/10 mt-2"></div>
-                <div><label class="text-[10px] font-bold text-slate-500 uppercase">Unique ID (URL)</label><input type="text" id="new-gang-slug" class="w-full p-4 rounded-xl bg-black border border-white/10 mt-2"></div>
-                <button onclick="finalCreateGang()" class="w-full bg-white text-black font-black py-4 rounded-2xl mt-4">Verify & Create <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase">Gang Name</label><input type="text" id="new-gang-name" class="w-full p-4 rounded-xl bg-black border border-white/10 mt-2 focus:border-purple-500 outline-none transition"></div>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase">Unique ID (URL)</label><input type="text" id="new-gang-slug" class="w-full p-4 rounded-xl bg-black border border-white/10 mt-2 focus:border-purple-500 outline-none transition"></div>
+                <button onclick="finalCreateGang()" class="w-full bg-white text-black font-black py-4 rounded-2xl mt-4 hover:bg-slate-200">Verify & Create <i class="fa-solid fa-arrow-right ml-2"></i></button>
             </div>
         </div>
     </div>
@@ -86,8 +97,8 @@
     <div id="admin-ui" class="hidden flex min-h-screen bg-black/40">
         <aside class="w-72 border-r border-white/5 p-8 flex flex-col bg-black/90 backdrop-blur-xl">
             <div class="flex items-center space-x-4 mb-12 px-2">
-                <img id="side-gang-img" src="https://via.placeholder.com/45" class="rounded-xl border border-white/10 w-11 h-11 object-cover">
-                <div><h2 id="side-gang-name" class="text-sm font-bold text-white">Teste'd</h2><span class="text-[10px] dynamic-text font-bold uppercase flex items-center"><i class="fa-solid fa-circle text-[6px] mr-1.5 animate-pulse"></i> Online</span></div>
+                <img id="side-gang-img" src="https://via.placeholder.com/45" class="rounded-xl border border-white/10 shadow-lg w-11 h-11 object-cover">
+                <div><h2 id="side-gang-name" class="text-sm font-bold text-white font-black tracking-tight">Teste'd</h2><span class="text-[10px] dynamic-text font-bold uppercase flex items-center"><i class="fa-solid fa-circle text-[6px] mr-1.5 animate-pulse"></i> Online</span></div>
             </div>
             <nav class="flex-1 space-y-2">
                 <button onclick="showPage('dashboard')" class="sidebar-item active w-full text-left p-4 flex items-center space-x-4 text-sm font-bold"><i class="fa-solid fa-layer-group"></i> <span>Dashboard</span></button>
@@ -98,65 +109,24 @@
             </nav>
             <button onclick="location.reload()" class="p-4 text-sm text-red-500 font-bold flex items-center space-x-4"><i class="fa-solid fa-power-off"></i> <span>Logout</span></button>
         </aside>
-
         <main class="flex-1 p-12 overflow-y-auto">
-            <div id="page-dashboard" class="page-content">
-                <h1 class="text-4xl font-black text-white mb-10">Dashboard</h1>
-                <div class="grid grid-cols-3 gap-8">
-                    <div class="col-span-2 dynamic-gradient rounded-[2rem] p-10 shadow-2xl">
-                        <h2 class="text-3xl font-black text-white mb-3">Welcome, Boss!</h2>
-                        <p id="display-slug" class="text-white/60">/testedboy</p>
-                    </div>
-                    <div class="glass-panel rounded-[2rem] p-10 text-center flex flex-col justify-center">
-                        <p class="text-[11px] font-black text-slate-500 uppercase mb-4">Total Members</p>
-                        <div id="member-count-display" class="text-6xl font-black text-white">0</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="page-directory" class="page-content hidden">
-                <h1 class="text-4xl font-black text-white mb-10">Active Directory</h1>
-                <div id="directory-list" class="space-y-4"></div>
-            </div>
-
+            <div id="page-dashboard" class="page-content"><h1 class="text-4xl font-black text-white mb-10">Dashboard</h1><div id="dashboard-content"></div></div>
+            <div id="page-directory" class="page-content hidden"><h1 class="text-4xl font-black text-white mb-10">Active Directory</h1><div id="directory-list" class="space-y-4"></div></div>
             <div id="page-members" class="page-content hidden">
-                <div class="flex justify-between items-center mb-10 text-white">
-                    <h1 class="text-4xl font-black">Members</h1>
-                    <button onclick="toggleModal(true)" class="bg-white text-black px-6 py-3 rounded-2xl font-bold">Add Member</button>
-                </div>
-                <div class="glass-panel rounded-[2rem] overflow-hidden">
-                    <table class="w-full text-left">
-                        <tbody id="member-table-body" class="divide-y divide-white/5"></tbody>
-                    </table>
-                </div>
+                <div class="flex justify-between items-center mb-10 text-white"><h1 class="text-4xl font-black">Members</h1><button onclick="toggleModal(true)" class="bg-white text-black px-6 py-3 rounded-2xl font-bold">Add Member</button></div>
+                <div class="glass-panel rounded-[2rem] overflow-hidden"><table class="w-full text-left"><tbody id="member-table-body" class="divide-y divide-white/5"></tbody></table></div>
             </div>
-
-            <div id="page-settings" class="page-content hidden">
-                <h1 class="text-4xl font-black text-white mb-10">Settings</h1>
-                <div class="max-w-2xl glass-panel p-10 rounded-[2rem]">
-                    <div class="mb-6"><label class="text-white block mb-2">Gang Name</label><input type="text" id="input-gang-name" class="w-full p-4 rounded-xl admin-input"></div>
-                    <button onclick="saveSettings()" class="bg-white text-black px-8 py-3 rounded-xl font-bold">Save</button>
-                </div>
-            </div>
-
-            <div id="page-appearance" class="page-content hidden">
-                <h1 class="text-4xl font-black text-white mb-10">Appearance</h1>
-                <div id="theme-gallery" class="grid grid-cols-3 gap-6"></div>
-            </div>
+            <div id="page-settings" class="page-content hidden"><h1 class="text-4xl font-black text-white mb-10">Settings</h1><div id="settings-content"></div></div>
+            <div id="page-appearance" class="page-content hidden"><h1 class="text-4xl font-black text-white mb-10">Appearance</h1><div id="theme-gallery" class="grid grid-cols-3 gap-6"></div></div>
         </main>
     </div>
 
-    <div id="member-modal" class="hidden fixed inset-0 z-[110] modal-bg flex items-center justify-center p-6">
-        <div class="bg-[#111] w-full max-w-sm rounded-[2.5rem] p-10 shadow-3xl">
-            <h2 class="text-white text-2xl mb-6">Create Profile</h2>
-            <div class="space-y-4">
-                <input type="text" id="m-name" placeholder="Member Name" class="w-full p-4 rounded-xl admin-input">
-                <input type="text" id="m-role" placeholder="Role" class="w-full p-4 rounded-xl admin-input">
-                <div class="flex gap-4">
-                    <button onclick="toggleModal(false)" class="flex-1 bg-white/5 text-white py-4 rounded-xl">Cancel</button>
-                    <button onclick="addMember()" class="flex-1 dynamic-bg text-white py-4 rounded-xl">Confirm</button>
-                </div>
-            </div>
+    <div id="success-popup" class="hidden fixed inset-0 z-[200] flex items-center justify-center success-modal">
+        <div class="bg-white rounded-3xl p-10 w-full max-w-sm text-center shadow-2xl animate-bounce-short">
+            <div class="check-circle"><i class="fa-solid fa-check check-icon"></i></div>
+            <h3 class="text-3xl font-black text-slate-800 mb-2">สำเร็จ</h3>
+            <p id="success-msg" class="text-slate-500 mb-8 font-bold">เข้าสู่ระบบสำเร็จ</p>
+            <button onclick="closeSuccessPopup()" class="w-24 dynamic-bg text-white py-3 rounded-xl font-black shadow-lg">OK</button>
         </div>
     </div>
 
@@ -170,12 +140,32 @@
         const db = firebase.database();
 
         let currentUser = null;
-        let gangData = { slug: 'new-gang', gangName: "New", gangImg: '', bg: '', members: [] };
+        let gangData = null;
+        let nextScreen = 'login';
 
-        // --- 2. AUTH LOGIC (FIXED) ---
+        // --- 2. AUTH & MODAL FUNCTIONS ---
         function switchAuth(screen) {
             document.getElementById('register-screen').classList.toggle('hidden', screen !== 'register');
             document.getElementById('login-screen').classList.toggle('hidden', screen !== 'login');
+        }
+
+        function showSuccess(msg, screen) {
+            document.getElementById('success-msg').innerText = msg;
+            nextScreen = screen;
+            document.getElementById('success-popup').classList.remove('hidden');
+        }
+
+        function closeSuccessPopup() {
+            document.getElementById('success-popup').classList.add('hidden');
+            if (nextScreen === 'login') switchAuth('login');
+            else if (nextScreen === 'create') {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('create-gang-screen').classList.remove('hidden');
+            } else if (nextScreen === 'admin') {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('create-gang-screen').classList.add('hidden');
+                document.getElementById('admin-ui').classList.remove('hidden');
+            }
         }
 
         function handleRegister() {
@@ -184,13 +174,8 @@
             const pin = document.getElementById('reg-pin').value;
             if(!user || !pass) return alert("กรุณากรอกข้อมูล");
             
-            db.ref('users/' + user).set({ 
-                password: pass, 
-                pin: pin, 
-                hasGang: false 
-            }).then(() => {
-                alert("สมัครสมาชิกสำเร็จ!"); 
-                switchAuth('login'); // ไปหน้า Login หลังสมัครเสร็จ
+            db.ref('users/' + user).set({ password: pass, pin: pin, hasGang: false }).then(() => {
+                showSuccess("สร้างรหัสผ่านสำเร็จ", 'login');
             });
         }
 
@@ -201,12 +186,10 @@
                 const data = snapshot.val();
                 if(data && data.password === pass) {
                     currentUser = user;
-                    // ตรวจสอบว่ามีแก๊งหรือยัง
-                    if(data.hasGang === false) {
-                        document.getElementById('login-screen').classList.add('hidden');
-                        document.getElementById('create-gang-screen').classList.remove('hidden');
-                    } else {
+                    if(data.hasGang === false) showSuccess("เข้าสู่ระบบสำเร็จ", 'create');
+                    else {
                         enterAdmin();
+                        showSuccess("เข้าสู่ระบบสำเร็จ", 'admin');
                     }
                 } else alert("Username หรือ Password ผิด!");
             });
@@ -221,18 +204,16 @@
             db.ref('users/' + currentUser).update({ hasGang: true, gangData: newGang });
             db.ref('directory/' + slug).set({ name: name, img: 'https://via.placeholder.com/45' });
             enterAdmin();
+            showSuccess("สร้างแก๊งสำเร็จ", 'admin');
         }
 
         function enterAdmin() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('create-gang-screen').classList.add('hidden');
-            document.getElementById('admin-ui').classList.remove('hidden');
             startRealtimeSync();
             loadDirectory();
             initThemes();
         }
 
-        // --- 3. DATA SYNC ---
+        // --- 3. CORE LOGIC ---
         function startRealtimeSync() {
             db.ref('users/' + currentUser + '/gangData').on('value', snapshot => {
                 const data = snapshot.val();
@@ -248,7 +229,7 @@
             
             const tbody = document.getElementById('member-table-body');
             tbody.innerHTML = list.map((m, idx) => `
-                <tr class="text-white"><td class="p-6">${m.name}</td><td class="p-6">${m.role}</td></tr>
+                <tr class="text-white hover:bg-white/5 transition"><td class="p-6 font-bold uppercase text-xs">${m.name}</td><td class="p-6 uppercase text-[10px] font-bold text-purple-400">${m.role}</td></tr>
             `).join('');
         }
 
@@ -257,15 +238,14 @@
                 const list = snapshot.val() || {};
                 const container = document.getElementById('directory-list');
                 container.innerHTML = Object.keys(list).map(k => `
-                    <div class="directory-card flex justify-between">
-                        <span class="text-white">${list[k].name}</span>
-                        <span class="text-slate-500">/${k}</span>
+                    <div class="directory-card flex justify-between items-center px-6 py-4 bg-white/5 rounded-2xl border border-white/5">
+                        <div class="flex items-center gap-4"><img src="${list[k].img}" class="w-10 h-10 rounded-lg"><span class="text-white font-black">${list[k].name}</span></div>
+                        <span class="text-slate-500 font-bold">/${k}</span>
                     </div>
                 `).join('');
             });
         }
 
-        // --- 4. NAVIGATION & UTILS ---
         function showPage(id) {
             document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
             document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
@@ -273,29 +253,13 @@
             event.currentTarget.classList.add('active');
         }
 
-        function toggleModal(show) { document.getElementById('member-modal').classList.toggle('hidden', !show); }
-
         function initThemes() {
             const themes = [{n:'Purple', c:'#7c3aed'}, {n:'Cyan', c:'#06b6d4'}];
-            document.getElementById('theme-gallery').innerHTML = themes.map(t => `<div onclick="setTheme('${t.c}', this)" class="theme-card p-4 text-white">${t.n}</div>`).join('');
+            document.getElementById('theme-gallery').innerHTML = themes.map(t => `<div onclick="setTheme('${t.c}', this)" class="theme-card p-6 text-center border border-white/10 hover:border-purple-500 transition cursor-pointer text-white font-bold">${t.n}</div>`).join('');
         }
 
         function setTheme(c, el) { document.documentElement.style.setProperty('--main-color', c); }
-        
-        function saveSettings() {
-            const n = document.getElementById('input-gang-name').value;
-            db.ref('users/' + currentUser + '/gangData').update({ gangName: n });
-            alert("Saved");
-        }
-
-        function addMember() {
-            const n = document.getElementById('m-name').value;
-            const r = document.getElementById('m-role').value;
-            const list = gangData.members || [];
-            list.push({name:n, role:r});
-            db.ref('users/' + currentUser + '/gangData/members').set(list);
-            toggleModal(false);
-        }
+        function toggleModal(show) { document.getElementById('member-modal').classList.toggle('hidden', !show); }
     </script>
 </body>
 </html>
