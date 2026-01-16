@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gang Management System - Realtime Edition</title>
+    <title>MywebX - Gang Management Network</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -14,37 +14,31 @@
         :root { --main-color: #7c3aed; }
         body { font-family: 'Inter', 'Kanit', sans-serif; background-color: #000; color: #94a3b8; overflow-x: hidden; transition: 0.3s; background-size: cover; background-position: center; background-attachment: fixed; }
         
-        /* Login/Register Style */
-        .auth-card { background: white; border-radius: 20px; width: 100%; max-width: 450px; padding: 40px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        /* Auth Styles */
+        .auth-card { background: white; border-radius: 20px; width: 100%; max-width: 450px; padding: 40px; }
         .auth-input { border: 1px solid #e2e8f0 !important; padding: 12px !important; border-radius: 10px !important; width: 100%; color: #1e293b !important; background: #f8fafc !important; }
         .auth-input:focus { border-color: #00bfff !important; outline: none; box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.1); }
-        .btn-auth { background-color: #00bfff; color: white; width: 100%; padding: 14px; border-radius: 10px; font-weight: bold; transition: 0.3s; }
-        .btn-auth:hover { background-color: #0099cc; transform: translateY(-1px); }
+        .btn-auth { background-color: #00bfff; color: white; width: 100%; padding: 14px; border-radius: 10px; font-weight: bold; }
 
-        /* Admin Dashboard Style */
+        /* Panel Styles */
         .sidebar-item.active { background-color: rgba(255, 255, 255, 0.05); color: var(--main-color); border-radius: 12px; border-right: 4px solid var(--main-color); }
         .dynamic-gradient { background: linear-gradient(135deg, var(--main-color) 0%, #1e1b4b 100%); }
         .glass-panel { background: rgba(10, 10, 10, 0.8); border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); }
-        .admin-input { background: #0a0a0a !important; border: 1px solid #262626 !important; color: white !important; }
-        .admin-input:focus { border-color: var(--main-color) !important; outline: none; }
-        .fb-badge { position: absolute; bottom: -2px; right: -2px; background: #1877f2; color: white; width: 14px; height: 14px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 8px; border: 1px solid #000; z-index: 10; }
-        .theme-card { background: #111; border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; cursor: pointer; transition: 0.2s; overflow: hidden; }
-        .theme-card.active { border-color: var(--main-color); box-shadow: 0 0 15px var(--main-color); }
+        .directory-card { background: rgba(20, 20, 20, 0.6); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 15px; transition: 0.2s; }
+        .directory-card:hover { background: rgba(30, 30, 30, 0.8); transform: scale(1.01); }
+        
         .dynamic-bg { background-color: var(--main-color); }
         .dynamic-text { color: var(--main-color); }
         .hidden { display: none; }
     </style>
 </head>
-<body>
+<body id="main-body">
 
     <div id="register-screen" class="min-h-screen flex items-center justify-center p-6 bg-[#f0f2f5]">
         <div class="auth-card">
             <div class="flex items-center space-x-4 mb-8">
                 <div class="bg-cyan-50 p-3 rounded-2xl"><i class="fa-solid fa-user-plus text-cyan-500 text-2xl"></i></div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-800">MywebX</h1>
-                    <p class="text-cyan-500 font-bold text-sm">สมัครสมาชิก</p>
-                </div>
+                <div><h1 class="text-2xl font-black text-slate-800">MywebX</h1><p class="text-cyan-500 font-bold text-sm">สมัครสมาชิก</p></div>
             </div>
             <div class="space-y-4">
                 <input type="text" id="reg-user" class="auth-input" placeholder="ชื่อผู้ใช้">
@@ -62,8 +56,8 @@
                     <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" class="w-6 h-6 grayscale opacity-50">
                 </div>
 
-                <button onclick="handleRegister()" class="btn-auth">สมัครสมาชิก</button>
-                <p class="text-center text-sm mt-6 text-slate-500">มีบัญชีอยู่แล้วหรือ? <a href="javascript:void(0)" onclick="switchAuth('login')" class="text-cyan-500 font-bold hover:underline">เข้าสู่ระบบเลย!</a></p>
+                <button onclick="handleRegister()" class="btn-auth mt-4 w-full">สมัครสมาชิก</button>
+                <p class="text-center text-sm text-slate-500 mt-4">มีบัญชีแล้วหรือ? <a href="javascript:void(0)" onclick="switchAuth('login')" class="text-cyan-500 font-bold">เข้าสู่ระบบเลย!</a></p>
             </div>
         </div>
     </div>
@@ -72,16 +66,34 @@
         <div class="auth-card">
             <div class="flex items-center space-x-4 mb-8">
                 <div class="bg-cyan-50 p-3 rounded-2xl"><i class="fa-solid fa-lock text-cyan-500 text-2xl"></i></div>
-                <div>
-                    <h1 class="text-2xl font-black text-slate-800">MywebX</h1>
-                    <p class="text-cyan-500 font-bold text-sm">เข้าสู่ระบบ</p>
-                </div>
+                <div><h1 class="text-2xl font-black text-slate-800">MywebX</h1><p class="text-cyan-500 font-bold text-sm">เข้าสู่ระบบ</p></div>
             </div>
             <div class="space-y-4">
                 <input type="text" id="login-user" class="auth-input" placeholder="Username">
                 <input type="password" id="login-pass" class="auth-input" placeholder="Password">
-                <button onclick="handleLogin()" class="btn-auth">เข้าสู่ระบบ</button>
-                <p class="text-center text-sm mt-6 text-slate-500">ยังไม่มีบัญชีหรือ? <a href="javascript:void(0)" onclick="switchAuth('register')" class="text-cyan-500 font-bold hover:underline">สมัครสมาชิกเลยสิ!</a></p>
+                <button onclick="handleLogin()" class="btn-auth w-full">เข้าสู่ระบบ</button>
+                <p class="text-center text-sm text-slate-500 mt-4">ยังไม่มีบัญชีหรือ? <a href="javascript:void(0)" onclick="switchAuth('register')" class="text-cyan-500 font-bold">สมัครสมาชิกเลยสิ!</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="create-gang-screen" class="min-h-screen flex items-center justify-center p-6 bg-black hidden">
+        <div class="glass-panel w-full max-w-lg p-10 rounded-[2.5rem] text-center">
+            <div class="w-20 h-20 dynamic-bg rounded-3xl mx-auto flex items-center justify-center mb-8 shadow-2xl">
+                <i class="fa-solid fa-shield-halved text-3xl text-white"></i>
+            </div>
+            <h2 class="text-3xl font-black text-white mb-2">Create Your Gang</h2>
+            <p class="text-slate-500 mb-10">Build your squad's presence in seconds.</p>
+            <div class="space-y-6 text-left">
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase px-2">Gang Name</label><input type="text" id="new-gang-name" placeholder="e.g. The Night Owls" class="w-full p-4 rounded-xl bg-black border border-white/10 mt-2 text-white"></div>
+                <div><label class="text-[10px] font-bold text-slate-500 uppercase px-2">Unique ID (URL)</label><input type="text" id="new-gang-slug" placeholder="/ night-owls" class="w-full p-4 rounded-xl bg-black border border-white/10 mt-2 text-white"></div>
+                
+                <div class="border border-white/5 p-4 rounded-xl flex items-center justify-between bg-white/[0.02]">
+                    <div class="flex items-center space-x-3"><i class="fa-solid fa-circle-check text-green-500"></i><span class="text-xs font-bold text-white">สำเร็จ!</span></div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Cloudflare_Logo.svg" class="h-4">
+                </div>
+                
+                <button onclick="finalCreateGang()" class="w-full bg-white text-black font-black py-4 rounded-2xl hover:bg-slate-200 transition">Verify & Create <i class="fa-solid fa-arrow-right ml-2"></i></button>
             </div>
         </div>
     </div>
@@ -90,59 +102,47 @@
         <aside class="w-72 border-r border-white/5 p-8 flex flex-col bg-black/90 backdrop-blur-xl">
             <div class="flex items-center space-x-4 mb-12 px-2">
                 <img id="side-gang-img" src="https://via.placeholder.com/45" class="rounded-xl border border-white/10 shadow-lg w-11 h-11 object-cover">
-                <div>
-                    <h2 id="side-gang-name" class="text-sm font-bold text-white tracking-tight">Teste'd</h2>
-                    <span class="text-[10px] dynamic-text font-semibold uppercase flex items-center">
-                        <i class="fa-solid fa-circle text-[6px] mr-1.5 animate-pulse"></i> Online
-                    </span>
-                </div>
+                <div><h2 id="side-gang-name" class="text-sm font-bold text-white tracking-tight font-black">Teste'd</h2><span class="text-[10px] dynamic-text font-bold flex items-center uppercase"><i class="fa-solid fa-circle text-[6px] mr-1.5 animate-pulse"></i> Online</span></div>
             </div>
             <nav class="flex-1 space-y-2">
-                <button onclick="showPage('dashboard')" class="sidebar-item active w-full text-left p-4 flex items-center space-x-4 text-sm font-bold">
-                    <i class="fa-solid fa-layer-group w-5"></i> <span>Dashboard</span>
-                </button>
-                <button onclick="showPage('members')" class="sidebar-item w-full text-left p-4 flex items-center space-x-4 text-sm font-bold">
-                    <i class="fa-solid fa-user-group w-5"></i> <span>Members</span>
-                </button>
-                <button onclick="showPage('appearance')" class="sidebar-item w-full text-left p-4 flex items-center space-x-4 text-sm font-bold">
-                    <i class="fa-solid fa-palette w-5"></i> <span>Appearance</span>
-                </button>
-                <button onclick="showPage('settings')" class="sidebar-item w-full text-left p-4 flex items-center space-x-4 text-sm font-bold">
-                    <i class="fa-solid fa-sliders w-5"></i> <span>Settings</span>
-                </button>
+                <button onclick="showPage('dashboard')" class="sidebar-item active w-full text-left p-4 flex items-center space-x-4 text-sm font-bold"><i class="fa-solid fa-layer-group"></i> <span>Dashboard</span></button>
+                <button onclick="showPage('members')" class="sidebar-item w-full text-left p-4 flex items-center space-x-4 text-sm font-bold"><i class="fa-solid fa-user-group"></i> <span>Members</span></button>
+                <button onclick="showPage('directory')" class="sidebar-item w-full text-left p-4 flex items-center space-x-4 text-sm font-bold"><i class="fa-solid fa-address-book"></i> <span>Active Directory</span></button>
+                <button onclick="showPage('appearance')" class="sidebar-item w-full text-left p-4 flex items-center space-x-4 text-sm font-bold"><i class="fa-solid fa-palette"></i> <span>Appearance</span></button>
+                <button onclick="showPage('settings')" class="sidebar-item w-full text-left p-4 flex items-center space-x-4 text-sm font-bold"><i class="fa-solid fa-gear"></i> <span>Settings</span></button>
             </nav>
-            <button onclick="location.reload()" class="p-4 text-sm text-red-500 font-bold flex items-center space-x-4 hover:bg-red-500/10 rounded-xl transition">
-                <i class="fa-solid fa-power-off"></i> <span>Logout</span>
-            </button>
+            <button onclick="location.reload()" class="p-4 text-sm text-red-500 font-bold flex items-center space-x-4"><i class="fa-solid fa-power-off"></i> <span>Logout</span></button>
         </aside>
 
-        <main class="flex-1 p-12 overflow-y-auto">
+        <main class="flex-1 p-12 overflow-y-auto bg-[#080808]">
             <div id="page-dashboard" class="page-content">
                 <div class="flex items-center space-x-3 mb-10">
                     <h1 class="text-4xl font-black text-white">Dashboard</h1>
                     <span id="display-slug" class="bg-white/5 text-[11px] px-3 py-1 rounded-full border border-white/10 text-slate-500 font-bold uppercase tracking-widest mt-2">/testedboy</span>
                 </div>
                 <div class="grid grid-cols-3 gap-8">
-                    <div class="col-span-2 dynamic-gradient rounded-[2rem] p-10 shadow-2xl transition-all duration-500">
-                        <h2 class="text-3xl font-black text-white mb-3">Welcome back, Commander!</h2>
-                        <p class="text-white/60 text-base max-w-md">ควบคุมสมาชิกและข้อมูลแก๊งของคุณแบบ Real-time ได้ที่นี่</p>
-                        <button onclick="showPage('members')" class="mt-8 bg-white text-black px-8 py-3 rounded-2xl font-black text-sm hover:shadow-xl transition-all active:scale-95 uppercase">Manage Squad</button>
+                    <div class="col-span-2 dynamic-gradient rounded-[2rem] p-10 shadow-2xl">
+                        <h2 class="text-3xl font-black text-white mb-3">Welcome, Boss!</h2>
+                        <p class="text-white/60">ควบคุมสมาชิกและข้อมูลแก๊งของคุณแบบ Real-time</p>
+                        <button onclick="showPage('members')" class="mt-8 bg-white text-black px-8 py-3 rounded-2xl font-black text-sm uppercase">Manage Squad</button>
                     </div>
-                    <div class="glass-panel rounded-[2rem] p-10 flex flex-col justify-center text-center">
-                        <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Total Members</p>
+                    <div class="glass-panel rounded-[2rem] p-10 text-center flex flex-col justify-center">
+                        <p class="text-[11px] font-black text-slate-500 uppercase tracking-widest mb-4">Total Members</p>
                         <div id="member-count-display" class="text-6xl font-black text-white">0</div>
-                        <div class="w-full bg-white/5 h-2 mt-6 rounded-full overflow-hidden">
-                            <div class="dynamic-bg h-full transition-all duration-500" style="width: 50%"></div>
-                        </div>
-                    </div>
-                    <div class="col-span-3 glass-panel rounded-[2rem] p-8">
-                        <div class="flex items-center space-x-4 mb-4 dynamic-text"><div class="p-3 bg-white/5 rounded-xl"><i class="fa-solid fa-link"></i></div><h4 class="font-bold">Public Gang Link</h4></div>
-                        <div class="flex space-x-3">
-                            <div id="full-url" class="flex-1 bg-black/50 border border-white/5 p-4 rounded-2xl text-sm text-slate-400 font-mono text-white tracking-tighter">gang.fivemlist.info/testedboy</div>
-                            <button onclick="copyLink()" class="bg-white text-black px-8 py-4 rounded-2xl text-xs font-black hover:bg-slate-200 transition-all uppercase tracking-widest">Copy URL</button>
-                        </div>
                     </div>
                 </div>
+            </div>
+
+            <div id="page-directory" class="page-content hidden">
+                <div class="flex items-center justify-between mb-10">
+                    <h1 class="text-4xl font-black text-white uppercase tracking-tight">Active Directory</h1>
+                    <span id="dir-total" class="bg-white/5 px-3 py-1 rounded text-[10px] font-bold">0</span>
+                </div>
+                <div class="bg-white/5 p-4 rounded-xl mb-8 flex items-center space-x-4 border border-white/5">
+                    <i class="fa-solid fa-magnifying-glass text-slate-500 pl-2"></i>
+                    <input type="text" placeholder="Search Gang ID or Name..." class="bg-transparent border-none w-full text-sm font-bold focus:outline-none text-white">
+                </div>
+                <div id="directory-list" class="space-y-4"></div>
             </div>
 
             <div id="page-members" class="page-content hidden">
@@ -158,28 +158,28 @@
                 </div>
             </div>
 
-            <div id="page-settings" class="page-content hidden">
-                <h1 class="text-4xl font-black text-white mb-10">Settings</h1>
-                <div class="max-w-2xl glass-panel rounded-[2.5rem] p-10 space-y-8">
-                    <div><label class="text-[11px] font-black text-slate-500 uppercase tracking-widest block mb-4">Edit Slug (URL)</label>
-                        <div class="flex items-center bg-black rounded-2xl border border-white/5 overflow-hidden focus-within:border-purple-500 transition"><span class="pl-5 text-slate-600 text-sm font-bold">gang.fivemlist.info/</span><input type="text" id="input-slug" class="flex-1 p-4 bg-transparent border-none !border-0 text-sm font-bold admin-input" value="testedboy"></div>
-                    </div>
-                    <div><label class="text-[11px] font-black text-slate-500 uppercase tracking-widest block mb-4">Gang Display Name</label><input type="text" id="input-gang-name" class="w-full p-4 rounded-2xl text-sm font-bold admin-input" value="Tested Gang"></div>
-                    <button onclick="saveSettings()" class="w-full bg-white text-black font-black py-5 rounded-2xl hover:bg-slate-200 transition-all shadow-xl uppercase tracking-widest text-sm">Save Changes</button>
-                </div>
-            </div>
-            
             <div id="page-appearance" class="page-content hidden">
                 <h1 class="text-4xl font-black text-white mb-10">Appearance</h1>
                 <div class="glass-panel rounded-[2.5rem] p-8 mb-10">
                     <div class="flex items-center space-x-3 mb-8"><i class="fa-solid fa-wand-magic-sparkles dynamic-text text-xl"></i><h2 class="text-xl font-bold text-white">Brand Identity</h2></div>
                     <div class="grid grid-cols-2 gap-8">
-                        <div><label class="text-[10px] font-black text-slate-500 uppercase block mb-3 px-1">Logo URL</label><input type="text" id="input-logo-url" class="w-full p-4 rounded-2xl text-sm font-bold admin-input" oninput="updateBrandPreview()"></div>
-                        <div><label class="text-[10px] font-black text-slate-500 uppercase block mb-3 px-1">Background URL</label><input type="text" id="input-bg-url" class="w-full p-4 rounded-2xl text-sm font-bold admin-input" oninput="updateBrandPreview()"></div>
+                        <div><label class="text-[10px] font-black text-slate-500 uppercase block mb-3 px-1">Logo URL</label><input type="text" id="input-logo-url" class="w-full p-4 rounded-2xl text-sm font-bold border border-white/5 bg-black text-white" oninput="updateBrandPreview()"></div>
+                        <div><label class="text-[10px] font-black text-slate-500 uppercase block mb-3 px-1">Background URL</label><input type="text" id="input-bg-url" class="w-full p-4 rounded-2xl text-sm font-bold border border-white/5 bg-black text-white" oninput="updateBrandPreview()"></div>
                     </div>
                     <button onclick="saveAppearance()" class="w-full bg-white text-black font-black py-5 rounded-2xl mt-8 uppercase tracking-widest text-xs">Save Identity</button>
                 </div>
                 <div class="grid grid-cols-4 gap-6" id="theme-gallery"></div>
+            </div>
+
+            <div id="page-settings" class="page-content hidden">
+                <h1 class="text-4xl font-black text-white mb-10">Settings</h1>
+                <div class="max-w-2xl glass-panel rounded-[2.5rem] p-10 space-y-8">
+                    <div><label class="text-[11px] font-black text-slate-500 uppercase tracking-widest block mb-4">Edit Slug (URL)</label>
+                        <div class="flex items-center bg-black rounded-2xl border border-white/5 overflow-hidden focus-within:border-purple-500 transition"><span class="pl-5 text-slate-600 text-sm font-bold">gang.fivemlist.info/</span><input type="text" id="input-slug" class="flex-1 p-4 bg-transparent border-none !border-0 text-sm font-bold text-white"></div>
+                    </div>
+                    <div><label class="text-[11px] font-black text-slate-500 uppercase tracking-widest block mb-4">Gang Display Name</label><input type="text" id="input-gang-name" class="w-full p-4 rounded-2xl text-sm font-bold border border-white/5 bg-black text-white"></div>
+                    <button onclick="saveSettings()" class="w-full bg-white text-black font-black py-5 rounded-2xl hover:bg-slate-200 transition-all shadow-xl uppercase tracking-widest text-sm">Save Changes</button>
+                </div>
             </div>
         </main>
     </div>
@@ -188,10 +188,10 @@
         <div class="bg-[#111] w-full max-w-sm rounded-[2.5rem] border border-white/10 p-10 shadow-3xl">
             <h2 class="text-2xl font-black text-white mb-8">Create Profile</h2>
             <div class="space-y-4">
-                <input type="text" id="m-name" placeholder="Member Name" class="w-full p-4 rounded-xl text-sm font-bold admin-input">
-                <input type="text" id="m-role" placeholder="Role (e.g. Leader)" class="w-full p-4 rounded-xl text-sm font-bold admin-input">
-                <input type="text" id="m-img" placeholder="Avatar Image URL" class="w-full p-4 rounded-xl text-sm font-bold admin-input">
-                <input type="text" id="m-fb" placeholder="Facebook URL (Optional)" class="w-full p-4 rounded-xl text-sm font-bold admin-input">
+                <input type="text" id="m-name" placeholder="Member Name" class="w-full p-4 rounded-xl text-sm font-bold bg-black border border-white/10 text-white">
+                <input type="text" id="m-role" placeholder="Role (e.g. Leader)" class="w-full p-4 rounded-xl text-sm font-bold bg-black border border-white/10 text-white">
+                <input type="text" id="m-img" placeholder="Avatar Image URL" class="w-full p-4 rounded-xl text-sm font-bold bg-black border border-white/10 text-white">
+                <input type="text" id="m-fb" placeholder="Facebook URL (Optional)" class="w-full p-4 rounded-xl text-sm font-bold bg-black border border-white/10 text-white">
                 <div class="flex space-x-3 pt-6">
                     <button onclick="toggleModal(false)" class="flex-1 bg-white/5 text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest">Cancel</button>
                     <button onclick="addMember()" class="flex-1 dynamic-bg text-white font-black py-4 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-purple-900/40">Confirm</button>
@@ -201,16 +201,10 @@
     </div>
 
     <script>
-        // --- Firebase Configuration ---
-        // (กรุณานำ Config จาก Firebase Console ของคุณมาใส่ที่นี่แทน)
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-        };
+        // --- Firebase Config --- (Replace with your actual Firebase config)
+        const firebaseConfig = { apiKey: "YOUR_API_KEY", databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
         let currentUser = null;
         let gangData = { slug: 'testedboy', gangName: "Teste'd", gangImg: '', bg: '', members: [] };
 
@@ -226,7 +220,7 @@
             const pin = document.getElementById('reg-pin').value;
             if(!user || pass.length < 4 || pin.length !== 6) return alert("กรุณากรอกข้อมูลให้ครบถ้วน (PIN 6 หลัก)");
             
-            db.ref('users/' + user).set({ password: pass, pin: pin, gangData: gangData }).then(() => {
+            db.ref('users/' + user).set({ password: pass, pin: pin, hasGang: false }).then(() => {
                 alert("สมัครสมาชิกสำเร็จ!"); switchAuth('login');
             });
         }
@@ -238,15 +232,61 @@
                 const data = snapshot.val();
                 if(data && data.password === pass) {
                     currentUser = user;
-                    document.getElementById('login-screen').classList.add('hidden');
-                    document.getElementById('admin-ui').classList.remove('hidden');
-                    startRealtimeSync();
-                    initThemes();
-                } else alert("ชื่อผู้ใช้หรือรหัสผ่านผิด!");
+                    if(!data.hasGang) {
+                        document.getElementById('login-screen').classList.add('hidden');
+                        document.getElementById('create-gang-screen').classList.remove('hidden');
+                    } else {
+                        enterAdmin();
+                    }
+                } else alert("Username or Password incorrect!");
             });
         }
 
-        // --- Realtime Sync ---
+        function finalCreateGang() {
+            const name = document.getElementById('new-gang-name').value;
+            const slug = document.getElementById('new-gang-slug').value.replace(/\//g, '').trim();
+            if(!name || !slug) return alert("กรุณาระบุชื่อและ ID แก๊ง");
+
+            const newGang = { gangName: name, slug: slug, gangImg: 'https://via.placeholder.com/45', members: [] };
+            db.ref('users/' + currentUser).update({ hasGang: true, gangData: newGang });
+            db.ref('directory/' + slug).set({ name: name, img: 'https://via.placeholder.com/45' });
+            enterAdmin();
+        }
+
+        function enterAdmin() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('create-gang-screen').classList.add('hidden');
+            document.getElementById('admin-ui').classList.remove('hidden');
+            startRealtimeSync();
+            loadDirectory();
+            initThemes();
+        }
+
+        // --- Real-time Directory ---
+        function loadDirectory() {
+            db.ref('directory').on('value', snapshot => {
+                const list = snapshot.val();
+                const container = document.getElementById('directory-list');
+                const totalSpan = document.getElementById('dir-total');
+                if(!list) return;
+                
+                const keys = Object.keys(list);
+                totalSpan.innerText = keys.length;
+                container.innerHTML = keys.map(key => `
+                    <div class="directory-card flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <img src="${list[key].img}" class="w-12 h-12 rounded-xl object-cover bg-black">
+                            <div>
+                                <h3 class="text-white font-black text-sm uppercase">${list[key].name}</h3>
+                                <p class="text-[10px] text-slate-500 font-bold bg-white/5 inline-block px-2 py-0.5 rounded mt-1">/${key}</p>
+                            </div>
+                        </div>
+                        <button class="bg-white/5 border border-white/5 text-[10px] font-black px-4 py-2 rounded-lg hover:bg-white/10 text-white transition">VISIT HQ <i class="fa-solid fa-arrow-up-right-from-square ml-2 opacity-50"></i></button>
+                    </div>
+                `).join('');
+            });
+        }
+
         function startRealtimeSync() {
             db.ref('users/' + currentUser + '/gangData').on('value', snapshot => {
                 const data = snapshot.val();
@@ -257,18 +297,9 @@
             });
         }
 
-        // --- UI Logic ---
-        function showPage(id) {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
-            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('page-' + id).classList.remove('hidden');
-            event.currentTarget.classList.add('active');
-        }
-
         function updateUI() {
             document.getElementById('side-gang-name').innerText = gangData.gangName;
             document.getElementById('display-slug').innerText = '/' + gangData.slug;
-            document.getElementById('full-url').innerText = 'gang.fivemlist.info/' + gangData.slug;
             document.getElementById('side-gang-img').src = gangData.gangImg || 'https://via.placeholder.com/45';
             document.getElementById('main-body').style.backgroundImage = gangData.bg ? `url('${gangData.bg}')` : 'none';
             
@@ -293,19 +324,21 @@
             `).join('');
         }
 
-        // --- Gang Actions ---
+        // --- Actions ---
+        function showPage(id) {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('page-' + id).classList.remove('hidden');
+            event.currentTarget.classList.add('active');
+        }
+
         function saveSettings() {
             const newSlug = document.getElementById('input-slug').value.replace(/\s+/g, '-').toLowerCase();
             const newName = document.getElementById('input-gang-name').value;
             db.ref('users/' + currentUser + '/gangData').update({ slug: newSlug, gangName: newName });
-            alert("บันทึกการตั้งค่าแล้ว!");
-        }
-
-        function saveAppearance() {
-            const logo = document.getElementById('input-logo-url').value;
-            const background = document.getElementById('input-bg-url').value;
-            db.ref('users/' + currentUser + '/gangData').update({ gangImg: logo, bg: background });
-            alert("บันทึกหน้าตาเว็บแล้ว!");
+            db.ref('directory/' + gangData.slug).remove(); // Remove old directory entry
+            db.ref('directory/' + newSlug).set({ name: newName, img: gangData.gangImg }); // Add new
+            alert("บันทึกแล้ว!");
         }
 
         function addMember() {
@@ -313,13 +346,10 @@
             const role = document.getElementById('m-role').value;
             const img = document.getElementById('m-img').value || 'https://via.placeholder.com/40';
             const fb = document.getElementById('m-fb').value;
-            if(!name || !role) return alert("กรุณาระบุชื่อและตำแหน่ง");
-
             const newList = gangData.members || [];
             newList.push({ name, role, img, fb });
             db.ref('users/' + currentUser + '/gangData/members').set(newList);
             toggleModal(false);
-            ['m-name', 'm-role', 'm-img', 'm-fb'].forEach(id => document.getElementById(id).value = '');
         }
 
         function removeMember(index) {
@@ -328,9 +358,14 @@
             db.ref('users/' + currentUser + '/gangData/members').set(newList);
         }
 
-        function toggleModal(show) { document.getElementById('member-modal').classList.toggle('hidden', !show); }
-        function copyLink() { navigator.clipboard.writeText(document.getElementById('full-url').innerText); alert("คัดลอกลิงก์แล้ว!"); }
-        
+        function saveAppearance() {
+            const logo = document.getElementById('input-logo-url').value;
+            const background = document.getElementById('input-bg-url').value;
+            db.ref('users/' + currentUser + '/gangData').update({ gangImg: logo, bg: background });
+            db.ref('directory/' + gangData.slug).update({ img: logo });
+            alert("บันทึกแล้ว!");
+        }
+
         function initThemes() {
             const themes = [
                 { name: 'Cyberpunk', color: '#fbbf24' }, { name: 'Arasaka', color: '#ef4444' }, { name: 'Night City', color: '#06b6d4' },
@@ -350,8 +385,10 @@
             document.querySelectorAll('.theme-card').forEach(c => c.classList.remove('active'));
             el.classList.add('active');
             document.documentElement.style.setProperty('--main-color', color);
-            // เพื่อให้ทุกคนเห็นสีเหมือนกัน คุณสามารถเซฟสีลง db.ref('.../themeColor') ได้เช่นกัน
         }
+
+        function toggleModal(show) { document.getElementById('member-modal').classList.toggle('hidden', !show); }
+        function copyLink() { navigator.clipboard.writeText(document.getElementById('full-url').innerText); alert("คัดลอกลิงก์แล้ว!"); }
     </script>
 </body>
 </html>
