@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #000; color: #94a3b8; overflow-x: hidden; }
         .sidebar-item.active { background-color: #1e1b4b; color: #a78bfa; border-radius: 12px; border-right: 4px solid #7c3aed; }
         .purple-gradient { background: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 100%); }
@@ -15,6 +15,8 @@
         input, select { background: #0a0a0a !important; border: 1px solid #262626 !important; color: white !important; transition: 0.2s; }
         input:focus { border-color: #7c3aed !important; box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2); outline: none; }
         .modal-bg { background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(8px); }
+        /* Badge สำหรับ Facebook บนรูปโปรไฟล์ */
+        .fb-badge { position: absolute; bottom: -2px; right: -2px; background: #1877f2; color: white; width: 14px; height: 14px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 8px; border: 1px solid #000; z-index: 10; }
     </style>
 </head>
 <body>
@@ -76,7 +78,7 @@
                 
                 <div class="grid grid-cols-3 gap-8">
                     <div class="col-span-2 purple-gradient rounded-[2rem] p-10 shadow-2xl shadow-purple-900/20">
-                        <h2 class="text-3xl font-black text-white mb-3">Welcome back, Boss!</h2>
+                        <h2 class="text-3xl font-black text-white mb-3 text-white">Welcome back, Boss!</h2>
                         <p class="text-purple-100/60 text-base max-w-md">ระบบจัดการแก๊งเวอร์ชันใหม่ พร้อมให้คุณควบคุมสมาชิกและข้อมูลทั้งหมดผ่านหน้าจอนี้</p>
                         <button onclick="showPage('members')" class="mt-8 bg-white text-purple-900 px-8 py-3 rounded-2xl font-black text-sm hover:shadow-xl transition-all active:scale-95">VIEW MEMBERS</button>
                     </div>
@@ -95,14 +97,14 @@
                             <h4 class="font-bold">Public Gang Link</h4>
                         </div>
                         <div class="flex space-x-3">
-                            <div id="full-url" class="flex-1 bg-black/50 border border-white/5 p-4 rounded-2xl text-sm text-slate-400 font-mono">gang.yourname.info/testedboy</div>
+                            <div id="full-url" class="flex-1 bg-black/50 border border-white/5 p-4 rounded-2xl text-sm text-slate-400 font-mono text-white">gang.yourname.info/testedboy</div>
                             <button onclick="copyLink()" class="bg-white text-black px-8 py-4 rounded-2xl text-xs font-black hover:bg-slate-200 transition-all uppercase tracking-widest">Copy URL</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="page-members" class="page-content hidden animate-fadeIn">
+            <div id="page-members" class="page-content hidden">
                 <div class="flex justify-between items-center mb-10">
                     <h1 class="text-4xl font-black text-white">Members</h1>
                     <button onclick="toggleModal(true)" class="bg-purple-600 text-white px-6 py-3 rounded-2xl text-sm font-black flex items-center space-x-3 hover:bg-purple-500 transition-all shadow-lg shadow-purple-900/30">
@@ -133,7 +135,6 @@
                             <span class="pl-5 text-slate-600 text-sm font-bold">gang.yourname.info/</span>
                             <input type="text" id="input-slug" class="flex-1 p-4 bg-transparent border-none !border-0 text-sm font-bold" value="testedboy">
                         </div>
-                        <p class="text-[10px] text-slate-500 mt-3 ml-2">This is your unique address for the gang profile.</p>
                     </div>
 
                     <div>
@@ -153,12 +154,26 @@
     </div>
 
     <div id="member-modal" class="hidden fixed inset-0 z-[110] modal-bg flex items-center justify-center p-6">
-        <div class="bg-[#0a0a0a] w-full max-w-md rounded-[2.5rem] border border-white/10 p-10 shadow-3xl transform scale-100 transition-all">
-            <h2 class="text-2xl font-black text-white mb-8">Create Profile</h2>
-            <div class="space-y-5">
-                <input type="text" id="m-name" placeholder="Member Name" class="w-full p-4 rounded-2xl text-sm font-bold">
-                <input type="text" id="m-role" placeholder="Role (e.g. Leader, Captain)" class="w-full p-4 rounded-2xl text-sm font-bold">
-                <input type="text" id="m-img" placeholder="Avatar Image URL" class="w-full p-4 rounded-2xl text-sm font-bold">
+        <div class="bg-[#0a0a0a] w-full max-w-md rounded-[2.5rem] border border-white/10 p-10 shadow-3xl">
+            <h2 class="text-2xl font-black text-white mb-8 text-white">Create Profile</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase block mb-2 px-1">Member Name</label>
+                    <input type="text" id="m-name" placeholder="e.g. John Doe" class="w-full p-4 rounded-2xl text-sm font-bold">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase block mb-2 px-1">Role / Rank</label>
+                    <input type="text" id="m-role" placeholder="e.g. Leader" class="w-full p-4 rounded-2xl text-sm font-bold">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase block mb-2 px-1">Avatar Image URL</label>
+                    <input type="text" id="m-img" placeholder="https://..." class="w-full p-4 rounded-2xl text-sm font-bold">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase block mb-2 px-1">Facebook URL (Optional)</label>
+                    <input type="text" id="m-fb" placeholder="https://facebook.com/..." class="w-full p-4 rounded-2xl text-sm font-bold">
+                </div>
+
                 <div class="flex space-x-4 pt-6">
                     <button onclick="toggleModal(false)" class="flex-1 bg-white/5 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-widest">Cancel</button>
                     <button onclick="addMember()" class="flex-1 bg-purple-600 text-white font-black py-4 rounded-2xl text-xs uppercase tracking-widest shadow-lg shadow-purple-900/40">Confirm</button>
@@ -175,7 +190,7 @@
             gangImg: 'https://via.placeholder.com/45'
         };
         let members = [
-            { id: 1, name: "Darkboy Boss", role: "Leader", img: "https://via.placeholder.com/40" }
+            { id: 1, name: "Darkboy Boss", role: "Leader", img: "https://via.placeholder.com/40", fb: "https://facebook.com" }
         ];
 
         // --- Auth ---
@@ -203,15 +218,18 @@
             tbody.innerHTML = members.map(m => `
                 <tr class="hover:bg-white/[0.01] transition-colors">
                     <td class="px-8 py-5 flex items-center space-x-4">
-                        <img src="${m.img}" class="w-10 h-10 rounded-xl border border-white/10 object-cover">
+                        <div class="relative w-10 h-10">
+                            <img src="${m.img}" class="w-10 h-10 rounded-xl border border-white/10 object-cover">
+                            ${m.fb ? `<div class="fb-badge"><i class="fa-brands fa-facebook-f"></i></div>` : ''}
+                        </div>
                         <span class="font-bold text-white text-sm">${m.name}</span>
                     </td>
                     <td class="px-8 py-5">
-                        <span class="bg-purple-500/10 text-purple-400 text-[10px] font-black px-3 py-1.5 rounded-lg border border-purple-500/20 uppercase">${m.role}</span>
+                        <span class="bg-purple-500/10 text-purple-400 text-[10px] font-black px-3 py-1.5 rounded-lg border border-purple-500/20 uppercase tracking-tighter">${m.role}</span>
                     </td>
                     <td class="px-8 py-5 text-right">
-                        <button onclick="removeMember(${m.id})" class="text-red-500/50 hover:text-red-500 transition-colors p-2">
-                            <i class="fa-solid fa-trash-can"></i>
+                        <button onclick="removeMember(${m.id})" class="text-red-500/50 hover:text-red-500 transition-colors p-2 bg-red-500/10 rounded-lg">
+                            <i class="fa-solid fa-trash-can text-xs"></i>
                         </button>
                     </td>
                 </tr>
@@ -228,17 +246,16 @@
             const name = document.getElementById('m-name').value;
             const role = document.getElementById('m-role').value;
             const img = document.getElementById('m-img').value || 'https://via.placeholder.com/40';
+            const fb = document.getElementById('m-fb').value;
 
             if(!name || !role) return alert("Please fill Name and Role");
 
-            members.push({ id: Date.now(), name, role, img });
+            members.push({ id: Date.now(), name, role, img, fb });
             updateMemberTable();
             toggleModal(false);
             
             // Clear inputs
-            document.getElementById('m-name').value = '';
-            document.getElementById('m-role').value = '';
-            document.getElementById('m-img').value = '';
+            ['m-name', 'm-role', 'm-img', 'm-fb'].forEach(id => document.getElementById(id).value = '');
         }
 
         function removeMember(id) {
