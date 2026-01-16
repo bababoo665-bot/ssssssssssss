@@ -3,115 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FiveM Server List - Protected</title>
+    <title>Gang Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* ซ่อนเนื้อหาหลักไว้ก่อนล็อกอิน */
-        #main-content { display: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #000; }
+        .sidebar-item.active { background-color: #1e293b; color: #fff; border-radius: 8px; }
+        .glass-card { background: rgba(17, 24, 39, 0.7); border: 1px solid rgba(75, 85, 99, 0.3); }
     </style>
 </head>
-<body class="bg-[#0f172a] text-slate-200">
+<body class="text-slate-300">
 
-    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-[#0f172a]">
-        <div class="bg-slate-800 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-slate-700">
-            <div class="text-center mb-8">
-                <div class="inline-block p-4 bg-blue-600/10 rounded-full mb-4">
-                    <i class="fa-solid fa-lock text-3xl text-blue-500"></i>
+    <div id="login-screen" class="fixed inset-0 z-[100] flex items-center justify-center bg-black">
+        <div class="w-full max-w-md p-8 bg-[#0a0a0a] border border-white/10 rounded-2xl shadow-2xl text-center">
+            <div class="mb-6">
+                <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center mb-4">
+                    <i class="fa-solid fa-shield-halved text-2xl text-white"></i>
                 </div>
-                <h2 class="text-2xl font-bold text-white">กรุณาเข้าสู่ระบบ</h2>
-                <p class="text-slate-400 text-sm">ระบุ User และ Password เพื่อเข้าใช้งาน</p>
+                <h1 class="text-2xl font-bold text-white uppercase tracking-wider">Gang Access</h1>
             </div>
-            
             <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Username</label>
-                    <input type="text" id="username" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 transition" placeholder="ระบุชื่อผู้ใช้">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Password</label>
-                    <input type="password" id="password" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 transition" placeholder="ระบุรหัสผ่าน">
-                </div>
-                <button onclick="checkLogin()" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-lg font-bold transition mt-4">
-                    เข้าสู่ระบบ
-                </button>
-                <p id="error-msg" class="text-red-400 text-center text-sm mt-2 hidden">ข้อมูลไม่ถูกต้อง กรุณาลองใหม่</p>
+                <input type="text" id="user" placeholder="Username" class="w-full bg-[#111] border border-white/5 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition">
+                <input type="password" id="pass" placeholder="Password" class="w-full bg-[#111] border border-white/5 p-3 rounded-lg focus:outline-none focus:border-blue-500 transition">
+                <button onclick="handleLogin()" class="w-full bg-white text-black font-bold py-3 rounded-lg hover:bg-gray-200 transition">LOGIN</button>
+                <p id="err" class="text-red-500 text-sm hidden">Invalid credentials</p>
             </div>
         </div>
     </div>
 
-    <div id="main-content">
-        <nav class="border-b border-slate-800 bg-[#0f172a]/80 backdrop-blur-md sticky top-0 z-50">
-            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-                <div class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-                    FIVEM GANG LIST
+    <div id="admin-ui" class="hidden flex min-h-screen">
+        
+        <aside class="w-64 border-r border-white/5 p-6 flex flex-col">
+            <div class="flex items-center space-x-3 mb-10 px-2">
+                <img src="https://via.placeholder.com/40" class="rounded-lg border border-white/10">
+                <div>
+                    <h2 class="text-sm font-bold text-white">Teste'd</h2>
+                    <span class="text-[10px] text-green-500 flex items-center"><i class="fa-solid fa-circle text-[6px] mr-1"></i> Online</span>
                 </div>
-                <button onclick="logout()" class="text-slate-400 hover:text-white text-sm">ออกจากระบบ</button>
             </div>
-        </nav>
 
-        <main class="container mx-auto px-4 py-10 text-center">
-            <h1 class="text-4xl font-black mb-4">ยินดีต้อนรับเข้าสู่ระบบ</h1>
-            <p class="text-slate-400 mb-10">ขณะนี้คุณสามารถเข้าถึงข้อมูลเซิร์ฟเวอร์ได้แล้ว</p>
+            <nav class="flex-1 space-y-2">
+                <p class="text-[10px] font-bold text-slate-500 uppercase px-2 mb-2">Main Menu</p>
+                <button onclick="showPage('dashboard')" class="sidebar-item active w-full text-left p-3 flex items-center space-x-3 text-sm transition">
+                    <i class="fa-solid fa-table-columns w-5"></i> <span>Dashboard</span>
+                </button>
+                <button onclick="showPage('members')" class="sidebar-item w-full text-left p-3 flex items-center space-x-3 text-sm transition">
+                    <i class="fa-solid fa-users w-5"></i> <span>Members</span>
+                </button>
+                <button onclick="showPage('appearance')" class="sidebar-item w-full text-left p-3 flex items-center space-x-3 text-sm transition">
+                    <i class="fa-solid fa-palette w-5"></i> <span>Appearance</span>
+                </button>
+                <button onclick="showPage('settings')" class="sidebar-item w-full text-left p-3 flex items-center space-x-3 text-sm transition">
+                    <i class="fa-solid fa-gear w-5"></i> <span>Settings</span>
+                </button>
+            </nav>
+
+            <div class="mt-auto space-y-2">
+                <button class="w-full text-left p-3 text-sm text-slate-500 hover:text-white transition flex items-center space-x-3">
+                    <i class="fa-solid fa-arrow-up-right-from-square w-5"></i> <span>View Live Site</span>
+                </button>
+                <button onclick="location.reload()" class="w-full text-left p-3 text-sm text-red-500 hover:text-red-400 transition flex items-center space-x-3">
+                    <i class="fa-solid fa-right-from-bracket w-5"></i> <span>Log Out</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-10 overflow-y-auto">
             
-            <div id="server-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div id="page-dashboard" class="page-content">
+                <div class="flex items-center space-x-2 mb-8">
+                    <h1 class="text-3xl font-bold text-white">Dashboard</h1>
+                    <span class="bg-white/5 text-[10px] px-2 py-1 rounded border border-white/10 text-slate-500">/Testedboy</span>
                 </div>
+                
+                <div class="grid grid-cols-3 gap-6">
+                    <div class="col-span-2 glass-card rounded-2xl p-8 flex justify-between items-center bg-gradient-to-br from-indigo-900/20 to-transparent">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-2">Welcome, Commander.</h3>
+                            <p class="text-slate-400 text-sm">Your dashboard is ready. You have full control over your gang's digital presence.</p>
+                        </div>
+                        <button class="bg-white text-black px-6 py-2 rounded-lg font-bold text-sm">Manage Squad</button>
+                    </div>
+                    <div class="glass-card rounded-2xl p-8">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-[10px] font-bold text-slate-500 uppercase">Total Members</h4>
+                            <i class="fa-solid fa-user-group text-slate-500 text-xs"></i>
+                        </div>
+                        <div class="text-4xl font-bold text-white">2</div>
+                        <div class="w-full bg-white/5 h-1 mt-4 rounded-full overflow-hidden">
+                            <div class="bg-blue-500 h-full w-1/3"></div>
+                        </div>
+                    </div>
+                    <div class="col-span-2 glass-card rounded-2xl p-6">
+                        <div class="flex items-center space-x-3 mb-4 text-blue-400">
+                            <i class="fa-solid fa-globe"></i>
+                            <h4 class="text-sm font-bold">Public Gang Link</h4>
+                        </div>
+                        <div class="flex space-x-2">
+                            <div class="flex-1 bg-black border border-white/5 p-3 rounded-lg text-sm text-slate-500">gang.fivemlist.info/testedboy</div>
+                            <button class="bg-white/5 px-4 py-2 rounded-lg text-xs font-bold border border-white/10 hover:bg-white/10 transition uppercase">Copy</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-members" class="page-content hidden text-center py-20">
+                <i class="fa-solid fa-users text-5xl mb-4 text-white/10"></i>
+                <h2 class="text-xl font-bold text-white">Member Management</h2>
+                <p class="text-slate-500">Manage your squad members and their roles here.</p>
+            </div>
+
         </main>
     </div>
 
     <script>
-        // ข้อมูลล็อกอินที่คุณกำหนด
-        const VALID_USER = "myweb";
-        const VALID_PASS = "kkk188618";
+        function handleLogin() {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            const err = document.getElementById('err');
 
-        // ตรวจสอบสถานะการล็อกอินตอนโหลดหน้าเว็บ
-        window.onload = function() {
-            if (sessionStorage.getItem("isLoggedIn") === "true") {
-                showContent();
-            }
-        };
-
-        function checkLogin() {
-            const userInput = document.getElementById('username').value;
-            const passInput = document.getElementById('password').value;
-            const errorMsg = document.getElementById('error-msg');
-
-            if (userInput === VALID_USER && passInput === VALID_PASS) {
-                sessionStorage.setItem("isLoggedIn", "true"); // เก็บสถานะไว้ชั่วคราว
-                showContent();
+            if(u === "myweb" && p === "kkk188618") {
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('admin-ui').classList.remove('hidden');
             } else {
-                errorMsg.classList.remove('hidden');
-                // ล้างช่องรหัสผ่าน
-                document.getElementById('password').value = "";
+                err.classList.remove('hidden');
             }
         }
 
-        function showContent() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-content').style.display = 'block';
-            renderServers(); // เรียกฟังก์ชันแสดงรายชื่อเซิร์ฟเวอร์ (จาก script.js)
-        }
-
-        function logout() {
-            sessionStorage.removeItem("isLoggedIn");
-            location.reload();
-        }
-
-        // ตัวอย่างข้อมูลเซิร์ฟเวอร์
-        function renderServers() {
-            const list = document.getElementById('server-list');
-            const servers = [
-                { name: "Siam City RP", players: "150/300", img: "https://via.placeholder.com/400x200" },
-                { name: "Gangland Thailand", players: "90/128", img: "https://via.placeholder.com/400x200" }
-            ];
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            // Remove active style from all sidebar items
+            document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
             
-            list.innerHTML = servers.map(s => `
-                <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-4">
-                    <img src="${s.img}" class="rounded-xl mb-4 w-full">
-                    <h3 class="text-xl font-bold">${s.name}</h3>
-                    <p class="text-emerald-400 text-sm mt-2">${s.players} Players Online</p>
-                </div>
-            `).join('');
+            // Show selected page
+            const selectedPage = document.getElementById('page-' + pageId);
+            if (selectedPage) selectedPage.classList.remove('hidden');
+            
+            // Add active style to clicked button
+            event.currentTarget.classList.add('active');
         }
     </script>
 </body>
